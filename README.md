@@ -126,30 +126,23 @@ If dist_table contains any wrong value, the search will evaluate routes using in
 
 ### Part 6a: Best-So-Far Tracking
 
-> Three bullets.
-
-- **What is tracked:** _Your answer here._
-- **When it is used:** _Your answer here._
-- **What it allows the algorithm to skip:** _Your answer here._
+- **What is tracked:** `best` is a two-element list `[cost, order]` holding the lowest total fuel found so far and the relic ordering that produced it.
+- **When it is used:** At the base case, once all relics are collected, the completed route's cost is compared to `best[0]` and replaces it if strictly lower.
+- **What it allows the algorithm to skip:** Any branch where `cost_so_far` plus the lower bound is already >= `best[0]` gets cut immediately, since it can't produce a strictly better result.
 
 ### Part 6b: Lower Bound Estimation
 
-> Three bullets.
-
-- **What information is available at the current state:** _Your answer here._
-- **What the lower bound accounts for:** _Your answer here._
-- **Why it never overestimates:** _Your answer here._
+- **What information is available at the current state:** `cost_so_far`, the set of remaining relics, `dist_table[current_loc][r]` for every remaining relic r, and `dist_table[r][exit_node]` for every remaining relic r.
+- **What the lower bound accounts for:** The cheapest possible hop from `current_loc` to any remaining relic, plus the cheapest possible hop from any remaining relic to `exit_node`. Both legs must appear in every valid completion of this branch.
+- **Why it never overestimates:** Each minimum is taken independently over the remaining relics, so the actual completion cost (which must include both legs) is always >= their sum.
 
 ### Part 6c: Pruning Correctness
 
-> One to two bullets. Explain why pruning is safe.
-
-- _Your answer here._
+- The optimal solution has some total cost C*. If `cost_so_far + lb >= best[0]` and `best[0] <= C*`, then no completion of this branch achieves C*, so cutting it is safe.
+- `best[0]` is only updated when a strictly better complete route is found, so it always holds a valid upper bound on the true optimum. Any branch that can't beat it is provably no better than what we already have.
 
 ---
 
 ## References
 
-> Bullet list. If none beyond lecture notes, write that.
-
-- _Your references here._
+- Lecture notes only.

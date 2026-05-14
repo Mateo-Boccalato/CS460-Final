@@ -22,33 +22,28 @@ Ran into the exact issue I flagged in Entry 1. My first version of run_dijkstra 
 
 ---
 
-## Entry 3 – [Date]: [Short description]
+## Entry 3 – 2026-05-14: Pruning design
 
-_Your entry here._
-
----
-
-## Entry 4 – [Date]: Post-Implementation Reflection
-
-> Required. Written after your implementation is complete. Describe what you would
-> change or improve given more time.
-
-_Your entry here._
+The trickiest part of the search was getting the lower bound right. My first instinct was to just prune on cost_so_far >= best[0], which works but cuts almost nothing early on when best[0] is still infinity. Adding a lower bound that accounts for both the cheapest remaining relic hop and the cheapest relic-to-exit hop made a real difference on larger inputs. I spent a while convincing myself it was actually safe: the key is that both legs have to exist in any valid completion, so taking their minimums separately still gives you something the real cost can't go below. Once I was sure about that the comment basically wrote itself.
 
 ---
 
-## Final Entry – [Date]: Time Estimate
+## Entry 4 – 2026-05-14: Post-Implementation Reflection
 
-> Required. Estimate minutes spent per part. Honesty is expected; accuracy is not graded.
+If I had more time I'd tighten the lower bound. Right now it takes two independent minimums, which is valid but loose when there are several relics left since it doesn't account for the cost of visiting the ones in between. A better bound would sum the minimum incoming edge for each remaining relic, similar to a minimum spanning tree bound used in TSP. I'd also add a check that skips branches the moment any required relic becomes provably unreachable, rather than waiting until we try to traverse an inf-cost edge. Both changes would cut more branches without affecting correctness.
+
+---
+
+## Final Entry – 2026-05-14: Time Estimate
 
 | Part | Estimated Hours |
 |---|---|
-| Part 1: Problem Analysis | |
-| Part 2: Precomputation Design | |
-| Part 3: Algorithm Correctness | |
-| Part 4: Search Design | |
-| Part 5: State and Search Space | |
-| Part 6: Pruning | |
-| Part 7: Implementation | |
-| README and DEVLOG writing | |
-| **Total** | |
+| Part 1: Problem Analysis | 0.25 |
+| Part 2: Precomputation Design | 0.5 |
+| Part 3: Algorithm Correctness | 1.0 |
+| Part 4: Search Design | 0.75 |
+| Part 5: State and Search Space | 0.5 |
+| Part 6: Pruning | 0.75 |
+| Part 7: Implementation | 3.0 |
+| README and DEVLOG writing | 1.0 |
+| **Total** | **7.75** |
