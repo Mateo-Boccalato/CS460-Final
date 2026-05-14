@@ -59,33 +59,23 @@
 
 ### Part 3a: What the Invariant Means
 
-> Two bullets: one for finalized nodes, one for non-finalized nodes.
-> Do not copy the invariant text from the spec.
-
 - **For nodes already finalized (in S):**
-  _Your answer here._
+  dist[v] is the true shortest-path distance from the source to v, not just a running estimate. It will not change for the rest of the algorithm.
 
 - **For nodes not yet finalized (not in S):**
-  _Your answer here._
+  dist[u] is the cheapest path found so far from the source to u, but only counting paths whose intermediate stops are all in S. A shorter path might still exist once more nodes get finalized.
 
 ### Part 3b: Why Each Phase Holds
 
-> One to two bullets per phase. Maintenance must mention nonnegative edge weights.
+- **Initialization:** Before the first iteration, S is empty and only the source has dist = 0. That's correct since the shortest path from a node to itself costs 0. All other estimates start at infinity, which is a valid upper bound.
 
-- **Initialization : why the invariant holds before iteration 1:**
-  _Your answer here._
+- **Maintenance:** When we extract the minimum-dist node u, any alternative path to u would have to pass through some unfinalized node v with dist[v] >= dist[u]. Since edge weights are nonnegative, extending any such path can only add cost, so no shorter path to u can exist. Finalizing u is safe.
 
-- **Maintenance : why finalizing the min-dist node is always correct:**
-  _Your answer here._
-
-- **Termination : what the invariant guarantees when the algorithm ends:**
-  _Your answer here._
+- **Termination:** When the queue empties, every reachable node has been finalized and holds its true shortest-path distance. Nodes that were never reached keep dist = inf.
 
 ### Part 3c: Why This Matters for the Route Planner
 
-> One sentence connecting correct distances to correct routing decisions.
-
-_Your answer here._
+If dist_table contains any wrong value, the search will evaluate routes using incorrect fuel costs and could select a suboptimal ordering or miss the true minimum entirely.
 
 ---
 

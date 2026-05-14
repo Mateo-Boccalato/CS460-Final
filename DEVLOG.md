@@ -16,12 +16,9 @@ Read through all four files before touching any code. The core problem is a weig
 
 ---
 
-## Entry 2 – [Date]: [Short description]
+## Entry 2 – 2026-05-14: Dijkstra missing-node bug
 
-> Required. At least one entry must describe a bug, wrong assumption, or design change
-> you encountered. Describe what went wrong and how you resolved it.
-
-_Your entry here._
+Ran into the exact issue I flagged in Entry 1. My first version of run_dijkstra only initialized dist for nodes that were keys in the graph dict, so nodes that only showed up as edge destinations never got added. When Dijkstra tried to relax an edge to one of those nodes it would throw a KeyError. Fixed it by scanning all neighbor lists during initialization and adding any missing nodes with dist = inf. Tested on a graph where T has no outgoing edges and only appears as a destination, and it works correctly now. precompute_distances was straightforward after that, just a loop over the sources from select_sources.
 
 ---
 
