@@ -138,7 +138,14 @@ def dijkstra_invariant_check():
 
     TODO
     """
-    return "TODO"
+    return (
+        "Finalized nodes: dist[v] is the true shortest-path distance from source to v, not just an estimate. "
+        "Non-finalized nodes: dist[u] is the cheapest path found so far using only finalized intermediates. "
+        "Initialization: dist[source]=0 is correct; all others start at inf, a valid upper bound. "
+        "Maintenance: extracting the min-dist node u is safe because any other path to u must pass through "
+        "an unfinalized node with dist >= dist[u], and nonneg edge weights mean extending it can only add cost. "
+        "Termination: every reachable node is finalized with its true shortest-path distance."
+    )
 
 
 # =============================================================================
@@ -189,7 +196,9 @@ def find_optimal_route(dist_table, spawn, relics, exit_node):
 
     TODO
     """
-    pass
+    best = [float('inf'), []]
+    _explore(dist_table, spawn, set(relics), [], 0, exit_node, best)
+    return (best[0], best[1])
 
 
 def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
@@ -221,7 +230,33 @@ def _explore(dist_table, current_loc, relics_remaining, relics_visited_order,
     explaining why it is safe (cannot skip the optimal solution).
     This comment is graded.
     """
-    pass
+    if not relics_remaining:
+        total = cost_so_far + dist_table[current_loc][exit_node]
+        if total < best[0]:
+            best[0] = total
+            best[1] = list(relics_visited_order)
+        return
+
+    # Lower bound: any valid completion must include at least one hop from current_loc
+    # to some remaining relic, and at least one hop from some remaining relic to exit.
+    # Both legs occur in every valid path, so their minimums sum to a safe lower bound.
+    # If cost_so_far plus this bound can't beat best[0], no completion of this branch
+    # can either, so pruning here never discards the optimal solution.
+    lb = (min(dist_table[current_loc][r] for r in relics_remaining) +
+          min(dist_table[r][exit_node] for r in relics_remaining))
+    if cost_so_far + lb >= best[0]:
+        return
+
+    for r in list(relics_remaining):
+        step = dist_table[current_loc][r]
+        if step == float('inf'):
+            continue
+        relics_remaining.remove(r)
+        relics_visited_order.append(r)
+        _explore(dist_table, r, relics_remaining, relics_visited_order,
+                 cost_so_far + step, exit_node, best)
+        relics_remaining.add(r)
+        relics_visited_order.pop()
 
 
 # =============================================================================
@@ -245,7 +280,8 @@ def solve(graph, spawn, relics, exit_node):
 
     TODO
     """
-    pass
+    dist_table = precompute_distances(graph, spawn, relics, exit_node)
+    return find_optimal_route(dist_table, spawn, relics, exit_node)
 
 
 # =============================================================================
