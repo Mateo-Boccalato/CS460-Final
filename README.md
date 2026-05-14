@@ -4,11 +4,6 @@
 **Student ID:** 130328923
 **Course:** CS 460 – Algorithms | Spring 2026
 
-> This README is your project documentation. Write it the way a developer would document
-> their design decisions , bullet points, brief justifications, and concrete examples where
-> required. You are not writing an essay. You are explaining what you built and why you built
-> it that way. Delete all blockquotes like this one before submitting.
-
 ---
 
 ## Part 1: Problem Analysis
@@ -53,9 +48,6 @@
 ---
 
 ## Part 3: Algorithm Correctness
-
-> Document your understanding of why Dijkstra produces correct distances.
-> Bullet points and short sentences throughout. No paragraphs.
 
 ### Part 3a: What the Invariant Means
 
