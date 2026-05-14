@@ -13,17 +13,14 @@
 
 ## Part 1: Problem Analysis
 
-> Document why this problem is not just a shortest-path problem. Three bullet points, one
-> per question. Each bullet should be 1-2 sentences max.
-
 - **Why a single shortest-path run from S is not enough:**
-  _Your answer here._
+  Dijkstra from S gives the cheapest way to reach each node, but it can't decide which relic to visit first. That ordering choice is exactly what changes the total fuel cost.
 
 - **What decision remains after all inter-location costs are known:**
-  _Your answer here._
+  You still have to pick the sequence to visit the relic chambers. Knowing every pairwise travel cost doesn't tell you which permutation of relics is cheapest end-to-end.
 
 - **Why this requires a search over orders (one sentence):**
-  _Your answer here._
+  The total cost depends on the order relics are visited, so the algorithm has to explore possible orderings and pick the one with the lowest total fuel.
 
 ---
 
@@ -31,33 +28,27 @@
 
 ### Part 2a: Source Selection
 
-> List the source node types as a bullet list. For each, one-line reason.
-
 | Source Node Type | Why it is a source |
 |---|---|
-| _node type_ | _one-line reason_ |
-| _node type_ | _one-line reason_ |
+| Spawn (S) | Every route starts here; need cheapest paths from S to each relic and to T |
+| Each relic node | After visiting a relic, the next leg starts from there; need costs to remaining relics and to T |
 
 ### Part 2b: Distance Storage
 
-> Fill in the table. No prose required.
-
 | Property | Your answer |
 |---|---|
-| Data structure name | |
-| What the keys represent | |
-| What the values represent | |
-| Lookup time complexity | |
-| Why O(1) lookup is possible | |
+| Data structure name | Nested dictionary (dict of dicts) |
+| What the keys represent | Source nodes (spawn + each relic) |
+| What the values represent | A dict mapping every reachable node to its minimum fuel cost from that source |
+| Lookup time complexity | O(1) |
+| Why O(1) lookup is possible | Python dicts are hash tables, so both the outer and inner lookups are constant time |
 
 ### Part 2c: Precomputation Complexity
 
-> State the total complexity and show the arithmetic. Two to three lines max.
-
-- **Number of Dijkstra runs:** _your answer_
-- **Cost per run:** _your answer_
-- **Total complexity:** _your answer_
-- **Justification (one line):** _your answer_
+- **Number of Dijkstra runs:** k+1 (one for spawn, one per relic; deduped if spawn is also a relic)
+- **Cost per run:** O(m log n)
+- **Total complexity:** O((k+1) * m log n)
+- **Justification (one line):** Each source in select_sources gets one full Dijkstra pass over all n nodes and m edges
 
 ---
 

@@ -34,7 +34,13 @@ def explain_problem():
 
     TODO
     """
-    return "TODO"
+    return (
+        "A single shortest-path run from S gives cheapest distances to every node, "
+        "but it can't decide which relic to visit first. That ordering choice changes the total cost. "
+        "After all pairwise travel costs are known, you still need to pick the sequence to visit relics. "
+        "The problem requires a search over orders because total fuel depends on which relic comes next, "
+        "and no single computation can resolve that."
+    )
 
 
 # =============================================================================
@@ -56,7 +62,7 @@ def select_sources(spawn, relics, exit_node):
 
     TODO
     """
-    pass
+    return list(set([spawn] + list(relics)))
 
 
 def run_dijkstra(graph, source):
