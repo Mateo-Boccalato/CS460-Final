@@ -155,7 +155,14 @@ def explain_search():
 
     TODO
     """
-    return "TODO"
+    return (
+        "Greedy fails because picking the nearest unvisited relic can force an expensive path later. "
+        "Example: dist[S][A]=1, dist[S][B]=2, dist[A][B]=100, dist[B][A]=1, dist[B][T]=1, dist[A][T]=1. "
+        "Greedy picks A first (cost 1) then must pay 100 to reach B, totaling 102. "
+        "Optimal goes S->B->A->T for a total of 4. "
+        "The algorithm must search over every possible order of visiting relics "
+        "and keep the order with the lowest total fuel cost."
+    )
 
 
 # =============================================================================

@@ -83,20 +83,15 @@ If dist_table contains any wrong value, the search will evaluate routes using in
 
 ### Why Greedy Fails
 
-> State the failure mode. Then give a concrete counter-example using specific node names
-> or costs (you may use the illustration example from the spec). Three to five bullets.
-
-- **The failure mode:** _Your answer here._
-- **Counter-example setup:** _Your answer here._
-- **What greedy picks:** _Your answer here._
-- **What optimal picks:** _Your answer here._
-- **Why greedy loses:** _Your answer here._
+- **The failure mode:** Greedy always picks the nearest unvisited relic, but a cheap first step can force an expensive path to the remaining relics or the exit.
+- **Counter-example setup:** Relics are A and B, exit is T. dist[S][A]=1, dist[S][B]=2, dist[A][B]=100, dist[A][T]=1, dist[B][A]=1, dist[B][T]=1.
+- **What greedy picks:** S -> A (cost 1, nearest), then A -> B (cost 100), then B -> T (cost 1). Total fuel = 102.
+- **What optimal picks:** S -> B (cost 2), then B -> A (cost 1), then A -> T (cost 1). Total fuel = 4.
+- **Why greedy loses:** A looks better from S because it costs 1 vs 2, but committing to A first makes the A -> B leg cost 100. Going to B first is slightly more expensive upfront but keeps all the remaining paths cheap.
 
 ### What the Algorithm Must Explore
 
-> One bullet. Must use the word "order."
-
-- _Your answer here._
+- The algorithm must try every possible order of visiting relics, tracking the total fuel cost for each complete order, and return the order with the lowest cost.
 
 ---
 
@@ -104,33 +99,26 @@ If dist_table contains any wrong value, the search will evaluate routes using in
 
 ### Part 5a: State Representation
 
-> Document the three components of your search state as a table.
-> Variable names here must match exactly what you use in torchbearer.py.
-
 | Component | Variable name in code | Data type | Description |
 |---|---|---|---|
-| Current location | | | |
-| Relics already collected | | | |
-| Fuel cost so far | | | |
+| Current location | `current_loc` | any hashable node | The chamber the Torchbearer is currently in |
+| Relics not yet collected | `relics_remaining` | set | Relics still to be visited; shrinks as the search goes deeper |
+| Fuel cost so far | `cost_so_far` | float | Total fuel burned to reach the current state |
 
 ### Part 5b: Data Structure for Visited Relics
 
-> Fill in the table.
-
 | Property | Your answer |
 |---|---|
-| Data structure chosen | |
-| Operation: check if relic already collected | Time complexity: |
-| Operation: mark a relic as collected | Time complexity: |
-| Operation: unmark a relic (backtrack) | Time complexity: |
-| Why this structure fits | |
+| Data structure chosen | set |
+| Operation: check if relic already collected | O(1) - check if node not in relics_remaining |
+| Operation: mark a relic as collected | O(1) - remove from relics_remaining |
+| Operation: unmark a relic (backtrack) | O(1) - add back to relics_remaining |
+| Why this structure fits | All three operations are O(1) with a hash set, and add/remove makes backtracking straightforward |
 
 ### Part 5c: Worst-Case Search Space
 
-> Two bullets.
-
-- **Worst-case number of orders considered:** _Your answer (in terms of k)._
-- **Why:** _One-line justification._
+- **Worst-case number of orders considered:** k! (k factorial)
+- **Why:** At each step there are k choices for the next relic, then k-1, and so on, giving k * (k-1) * ... * 1 paths in the worst case before pruning kicks in.
 
 ---
 
